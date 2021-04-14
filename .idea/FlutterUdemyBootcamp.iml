@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/dicee-flutter/android/app/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/dicee-flutter/android/app/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/magic_8_ball/android/app/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/magic_8_ball/android/app/src/main/res" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/dicee-flutter/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dicee-flutter/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dicee-flutter/build" />
+      <excludeFolder url="file://$MODULE_DIR$/magic_8_ball/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/magic_8_ball/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/magic_8_ball/build" />
+      <excludeFolder url="file://$MODULE_DIR$/mi_card/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/mi_card/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Dart SDK" level="project" />
+    <orderEntry type="library" name="Dart Packages" level="project" />
+  </component>
+</module>
