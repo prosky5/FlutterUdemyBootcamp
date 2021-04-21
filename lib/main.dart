@@ -6,11 +6,25 @@ void main() => runApp(XylophoneApp());
 class XylophoneApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     final assetsAudioPlayer = AssetsAudioPlayer();
 
     void play(int num) {
       assetsAudioPlayer.open(Audio('assets/note$num.wav'));
+    }
+
+    Expanded getButton(int numSound, Color color, String text) {
+      return Expanded(
+        child: TextButton(
+          onPressed: () {
+            play(numSound);
+          },
+          style: ButtonStyle(
+            backgroundColor:
+            MaterialStateProperty.all<Color>(color),
+          ),
+          child: Text(text),
+        ),
+      );
     }
 
     return MaterialApp(
@@ -19,90 +33,13 @@ class XylophoneApp extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(1);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.yellow.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(2);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.orange.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(3);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.red.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(4);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.pink.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(5);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.purple.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(6);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.blue.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    play(7);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.green.shade500),
-                  ),
-                  child: Text(""),
-                ),
-              ),
+              getButton(1, Colors.yellow.shade500, ""),
+              getButton(2, Colors.orange.shade500, ""),
+              getButton(3, Colors.red.shade500, ""),
+              getButton(4, Colors.pink.shade500, ""),
+              getButton(5, Colors.purple.shade500, ""),
+              getButton(6, Colors.blue.shade500, ""),
+              getButton(7, Colors.green.shade500, ""),
             ],
           ),
         ),
