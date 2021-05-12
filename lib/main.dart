@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-void main() => runApp(Quizzler());
-
-// String url =
-//     'https://psv4.userapi.com/c856420/u46201202/docs/d2/7f05e13f7347/Nice_cock.gif';
-String image = '';
-
 List<Icon> scorekeeper = [];
+
+String url = 'https://64.media.tumblr.com/'
+    '8fd9c7b0fb9ecabb5f48713071029abe/'
+    'tumblr_pcbz7cJbD51xyh2eoo1_500.gif';
+
+String url2 = 'https://media.tenor.com/'
+    'images/8d931c62353b5ff6addb8fe213cd9103/tenor.gif';
 
 List<Tuple2<String, bool>> questions = [
   Tuple2('You can lead a cow down stairs but not up stairs.', false),
@@ -15,25 +16,19 @@ List<Tuple2<String, bool>> questions = [
   Tuple2('A slug\'s blood is green.', true),
 ];
 
-class Quizzler extends StatelessWidget {
-  // Image getEgg() {
-  //   // if (scorekeeper.length >= questions.length) {
-  //   return Image.network(url);
-  // }
 
+void main() => runApp(Quizzler());
+
+class Quizzler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: Container(
-            decoration:
-                BoxDecoration(image: DecorationImage(image: AssetImage(image), fit: Fit)),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: QuizPage(),
-            ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: QuizPage(),
           ),
         ),
       ),
@@ -59,8 +54,7 @@ class _QuizPageState extends State<QuizPage> {
     if (scorekeeper.length < questions.length) {
       return questions[scorekeeper.length].item1;
     } else {
-      image = 'images/Nice_cock.gif';
-      return 'QUIZZLER done.\nNice cock!';
+      return 'QUIZZLER done.\nNice work!';
     }
   }
 
@@ -72,16 +66,57 @@ class _QuizPageState extends State<QuizPage> {
       children: <Widget>[
         Expanded(
           flex: 5,
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Center(
-              child: Text(
-                getQuestion(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 25.0,
-                  color: Colors.white,
+          child: Stack(children: [
+            Center(
+              child: Visibility(
+                visible: !getFinal(),
+                child: Image.network(url),
+              ),
+            ),
+            Center(
+              child: Visibility(
+                visible: getFinal(),
+                child: Image.asset('images/nice.gif'),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Center(
+                child: Text(
+                  getQuestion(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    color: Colors.white,
+                  ),
                 ),
+              ),
+            )
+          ]),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: Visibility(
+              visible: getFinal(),
+              child: TextButton(
+                child: Text(
+                  'True',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.green,
+                  onSurface: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    scorekeeper.add(checkAnswer(scorekeeper.length, true));
+                  });
+                },
               ),
             ),
           ),
@@ -89,52 +124,30 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
-            child: TextButton(
-              child: Text(
-                'True',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+            child: Visibility(
+              visible: getFinal(),
+              child: TextButton(
+                child: Text(
+                  'False',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
                 ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.red,
+                  onSurface: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    scorekeeper.add(checkAnswer(scorekeeper.length, false));
+                  });
+                },
               ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Colors.green,
-                onSurface: Colors.grey,
-              ),
-              onPressed: () {
-                setState(() {
-                  scorekeeper.add(checkAnswer(scorekeeper.length, true));
-                });
-              },
             ),
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(15.0),
-            child: TextButton(
-              child: Text(
-                'False',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Colors.red,
-                onSurface: Colors.grey,
-              ),
-              onPressed: () {
-                setState(() {
-                  scorekeeper.add(checkAnswer(scorekeeper.length, false));
-                });
-              },
-            ),
-          ),
-        ),
-        //TODO: Add a Row here as your score keeper
         Row(
           children: scorekeeper,
         )
@@ -143,8 +156,9 @@ class _QuizPageState extends State<QuizPage> {
   }
 }
 
-/*
-question1: 'You can lead a cow down stairs but not up stairs.', false,
-question2: 'Approximately one quarter of human bones are in the feet.', true,
-question3: 'A slug\'s blood is green.', true,
-*/
+bool getFinal() {
+  if (scorekeeper.length >= questions.length)
+    return false;
+  else
+    return true;
+}
