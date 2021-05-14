@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
+import 'package:quizzler/entity/question.dart';
+import 'package:quizzler/entity/scoreHolder.dart';
 
-List<Icon> scorekeeper = [];
+final _INPROGRESS = 0;
+final _SUCCESS = 1;
+final _SOSO = 2;
+final _FAIL = 3;
+
+int giftNum = _INPROGRESS;
+List<ScoreHolder> scorehodler = [];
+
 
 String url = 'https://64.media.tumblr.com/'
     '8fd9c7b0fb9ecabb5f48713071029abe/'
@@ -10,10 +18,16 @@ String url = 'https://64.media.tumblr.com/'
 String url2 = 'https://media.tenor.com/'
     'images/8d931c62353b5ff6addb8fe213cd9103/tenor.gif';
 
-List<Tuple2<String, bool>> questions = [
-  Tuple2('You can lead a cow down stairs but not up stairs.', false),
-  Tuple2('Approximately one quarter of human bones are in the feet.', true),
-  Tuple2('A slug\'s blood is green.', true),
+String url3 = 'https://pa1.narvii.com/'
+    '5699/5828864a1cd5e7f810be11cafa614769950e6802_hq.gif';
+
+
+List<Question> questions = [
+  Question(q: 'You can lead a cow down stairs but not up stairs.', ans: false),
+  Question(
+      q: 'Approximately one quarter of human bones are in the feet.',
+      ans: true),
+  Question(q: 'A slug\'s blood is green.', ans: true),
 ];
 
 
@@ -42,22 +56,6 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  Icon checkAnswer(int question, bool answer) {
-    if (answer == questions[question].item2) {
-      return Icon(Icons.check, color: Colors.green);
-    } else {
-      return Icon(Icons.close, color: Colors.red);
-    }
-  }
-
-  String getQuestion() {
-    if (scorekeeper.length < questions.length) {
-      return questions[scorekeeper.length].item1;
-    } else {
-      return 'QUIZZLER done.\nNice work!';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -67,18 +65,32 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           flex: 5,
           child: Stack(children: [
-            Center(
-              child: Visibility(
-                visible: !getFinal(),
-                child: Image.network(url),
+            Stack(children: [
+              Center(
+                child: Visibility(
+                  visible: getFinal() == _SUCCESS,
+                  child: Image.network(url),
+                ),
               ),
-            ),
-            Center(
-              child: Visibility(
-                visible: getFinal(),
-                child: Image.asset('images/nice.gif'),
+              Center(
+                child: Visibility(
+                  visible: getFinal() == _SOSO,
+                  child: Image.network(url2),
+                ),
               ),
-            ),
+              Center(
+                child: Visibility(
+                  visible: getFinal() == _FAIL,
+                  child: Image.network(url3),
+                ),
+              ),
+              Center(
+                child: Visibility(
+                  visible: getFinal() == _INPROGRESS,
+                  child: Image.asset('images/nice.gif'),
+                ),
+              )
+            ]),
             Padding(
               padding: EdgeInsets.all(10.0),
               child: Center(
@@ -86,19 +98,27 @@ class _QuizPageState extends State<QuizPage> {
                   getQuestion(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
+                    shadows: <Shadow>[
+                      Shadow(
+                        offset: Offset(3.0, 3.0),
+                        blurRadius: 3.0,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ],
+                    decorationThickness: 1.0,
                     fontSize: 25.0,
                     color: Colors.white,
                   ),
                 ),
               ),
-            )
+            ),
           ]),
         ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: Visibility(
-              visible: getFinal(),
+              visible: getFinal() == _INPROGRESS,
               child: TextButton(
                 child: Text(
                   'True',
@@ -114,7 +134,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    scorekeeper.add(checkAnswer(scorekeeper.length, true));
+                    checkAnswer(scorehodler.length, true);
                   });
                 },
               ),
@@ -125,7 +145,7 @@ class _QuizPageState extends State<QuizPage> {
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: Visibility(
-              visible: getFinal(),
+              visible: getFinal() == _INPROGRESS,
               child: TextButton(
                 child: Text(
                   'False',
@@ -141,7 +161,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    scorekeeper.add(checkAnswer(scorekeeper.length, false));
+                    checkAnswer(scorehodler.length, false);
                   });
                 },
               ),
@@ -149,16 +169,78 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
         Row(
-          children: scorekeeper,
-        )
+          children: scorehodler
+              .asMap()
+              .entries
+              .map((e) => e.value.answerIcon)
+              .toList(),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: Visibility(
+              visible: getFinal() > _INPROGRESS,
+              child: TextButton(
+                child: Text(
+                  'Try again!',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.green,
+                  onSurface: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    scorehodler.clear();
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
+
+  checkAnswer(int questionNumber, bool answer) {
+    if (answer == questions[questionNumber].answer) {
+      scorehodler.add(ScoreHolder(
+          icon: Icon(Icons.check, color: Colors.green), isRight: true));
+    } else {
+      scorehodler.add(ScoreHolder(
+          icon: Icon(Icons.close, color: Colors.red), isRight: false));
+    }
+    // crutch for update url, sorry =)
+    getQuestion();
+  }
+
+  String getQuestion() {
+    if (scorehodler.length < questions.length) {
+      return questions[scorehodler.length].question;
+    } else {
+      var answers =
+          scorehodler.asMap().entries.map((e) => e.value.isRightAnswer);
+
+      if (answers.every((element) => element == true)) {
+        giftNum = _SUCCESS;
+        return 'QUIZZLER done.\nNice work!';
+      }
+      if (answers.every((element) => element == false)) {
+        giftNum = _FAIL;
+        return 'QUIZZLER completely failed.\nDon\'t be upset, Username!';
+      } else {
+        giftNum = _SOSO;
+        return 'QUIZZLER failed. \nTry again';
+      }
+    }
+  }
 }
 
-bool getFinal() {
-  if (scorekeeper.length >= questions.length)
-    return false;
-  else
-    return true;
+int getFinal() {
+  if (scorehodler.length >= questions.length) return giftNum;
+  return _INPROGRESS;
 }
