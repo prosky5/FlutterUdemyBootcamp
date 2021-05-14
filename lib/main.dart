@@ -10,7 +10,6 @@ final _FAIL = 3;
 int giftNum = _INPROGRESS;
 List<ScoreHolder> scorehodler = [];
 
-
 String url = 'https://64.media.tumblr.com/'
     '8fd9c7b0fb9ecabb5f48713071029abe/'
     'tumblr_pcbz7cJbD51xyh2eoo1_500.gif';
@@ -21,7 +20,6 @@ String url2 = 'https://media.tenor.com/'
 String url3 = 'https://pa1.narvii.com/'
     '5699/5828864a1cd5e7f810be11cafa614769950e6802_hq.gif';
 
-
 List<Question> questions = [
   Question(q: 'You can lead a cow down stairs but not up stairs.', ans: false),
   Question(
@@ -29,7 +27,6 @@ List<Question> questions = [
       ans: true),
   Question(q: 'A slug\'s blood is green.', ans: true),
 ];
-
 
 void main() => runApp(Quizzler());
 
@@ -169,11 +166,13 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
         Row(
-          children: scorehodler
-              .asMap()
-              .entries
-              .map((e) => e.value.answerIcon)
-              .toList(),
+          children: scorehodler.isEmpty
+              ? List.filled(1, Icon(Icons.error_outline, color: Colors.transparent))
+              : scorehodler
+                  .asMap()
+                  .entries
+                  .map((e) => e.value.answerIcon)
+                  .toList(),
         ),
         Expanded(
           child: Padding(
